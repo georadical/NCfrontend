@@ -1,0 +1,33 @@
+name: openapi_sync_guard
+summary: Ensure the generated OpenAPI client in the frontend remains in sync with the backend schema by performing automated drift detection.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Never regenerate the client blindly; always confirm backend changes.
+  - Do not modify generated files manually; treat them as read-only.
+  - Keep schema versioning lightweight and machine-readable.
+guidelines:
+  coding:
+    - Maintain a version file (e.g., src/lib/api/schema.meta.json) storing:
+      { "schemaVersion": "<timestamp or git-hash>", "source": "<schema-url>" }.
+    - After running `npm run gen:api`, update the version automatically.
+    - Implement a CI check comparing the local schema.meta.json with the current backend `/api/schema/` hash.
+    - Provide a CLI/Node script (`scripts/check-schema-sync.js`) to verify drift locally.
+    - Emit warnings in dev console when schema is outdated.
+  testing:
+    - Unit tests for the drift-check script (matching hash, mismatch alert).
+    - CI test validating schema sync on pull requests.
+    - Ensure codegen skips regeneration when schema hash is unchanged.
+  communication:
+    - Document how and when to run the schema sync check.
+    - Explain how to update schema.meta.json after confirmed backend changes.
+runbook:
+  steps:
+    - Add schema.meta.json to src/lib/api/ with version and source.
+    - Implement hash generator script for current schema.
+    - Add npm script: "check:schema": "node scripts/check-schema-sync.js".
+    - Integrate drift check in CI workflow (pre-merge or nightly).
+    - On mismatch, instruct contributors to run `npm run gen:api`.
+    - Update README with schema sync instructions and troubleshooting.

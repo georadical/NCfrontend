@@ -1,0 +1,48 @@
+name: security_headers_csrf
+summary: Enforce security headers and CSRF/JWT hygiene in the Next.js UI: SameSite/secure cookies, CSRF tokens on mutations, safe CORS defaults, and consistent header policies.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Do not store tokens in localStorage; prefer httpOnly cookies.
+  - Always send CSRF tokens for state-changing requests (POST/PUT/PATCH/DELETE).
+  - Use SameSite and Secure flags on cookies; set Path and reasonable Max-Age.
+  - Avoid wildcard CORS in production; restrict origins and methods.
+  - Do not leak sensitive headers in client logs or telemetry.
+guidelines:
+  headers:
+    - Set strict headers via Next.js middleware/route handlers:
+      - Content-Security-Policy (CSP) with minimal allowed sources.
+      - X-Frame-Options: DENY (or SAMEORIGIN if embedding is required).
+      - X-Content-Type-Options: nosniff.
+      - Referrer-Policy: strict-origin-when-cross-origin.
+      - Strict-Transport-Security (HSTS) in HTTPS environments.
+    - Normalize custom header names for CSRF (e.g., X-CSRFToken).
+  csrf_jwt:
+    - Read CSRF token from cookie/meta; attach to mutation requests.
+    - Handle 401/403 by refreshing CSRF or redirecting to login as needed.
+    - Keep JWT/session cookies httpOnly; do not expose to JS runtime.
+    - Rotate tokens on login; clear cookies on logout.
+  cors:
+    - Centralize CORS configuration: allowed origins, methods, headers.
+    - Disallow credentials with wildcard origins; use explicit origin lists.
+  coding:
+    - Provide a central fetch wrapper that appends CSRF header on mutations.
+    - Add Next.js middleware to inject security headers on all responses.
+    - Expose util helpers to read/set cookies safely (server components/actions).
+  testing:
+    - Unit tests for the fetch wrapper adding CSRF header on mutations.
+    - Integration tests validating redirects/flows on 401/403.
+    - Verify presence of security headers in responses (middleware test).
+  communication:
+    - Document cookie names, flags, CSRF header name, and rotation rules.
+    - Provide a checklist for production hardening (CSP, HSTS, CORS).
+runbook:
+  steps:
+    - Implement Next.js middleware setting baseline security headers.
+    - Create a centralized API client that injects CSRF header on mutations.
+    - Add cookie helpers (read/write) that avoid exposing secrets to the client.
+    - Configure CORS and document approved origins.
+    - Write tests for headers, CSRF flow, and 401/403 handling.
+    - Update README with deployment notes (HTTPS, proxies, header overrides).

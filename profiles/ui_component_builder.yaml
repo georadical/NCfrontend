@@ -1,0 +1,32 @@
+name: ui_component_builder
+summary: Build reusable and accessible UI components (tables, forms, toasts, dialogs) aligned with the design system and Next.js app architecture.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Do not introduce new UI libraries without approval (stick to Tailwind/shadcn).
+  - Follow responsive and accessibility guidelines (ARIA, semantic HTML).
+  - Keep components atomic and reusable; avoid embedding complex business logic.
+guidelines:
+  coding:
+    - Use Tailwind utilities and shadcn primitives for styling.
+    - Ensure components are mobile-first responsive.
+    - Add ARIA roles and keyboard navigation support.
+    - Abstract common UI patterns: tables with pagination, form fields with validation, toasts, modals.
+    - Export components from a central index for discoverability.
+  testing:
+    - Add Jest/RTL tests for forms (validation, submit) and tables (sorting, pagination).
+    - Snapshot tests for visual components.
+    - Playwright tests for critical UI flows (form wizard, navigation).
+  communication:
+    - Document props and usage with inline comments (EN only).
+    - Provide examples of integration with API responses (mock data where needed).
+runbook:
+  steps:
+    - Identify UI pattern to implement (form, table, toast, modal).
+    - Draft responsive structure with Tailwind classes.
+    - Add accessibility attributes and keyboard support.
+    - Wire component to mock data first, then to API client.
+    - Write RTL test for core behavior (submit, render rows, etc.).
+    - Update documentation and index export.

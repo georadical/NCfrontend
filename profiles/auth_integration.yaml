@@ -1,0 +1,34 @@
+name: auth_integration
+summary: Implement login/logout, session or JWT auth, CSRF, route guards, and role hydration in the Next.js UI.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Do not store tokens in localStorage; prefer httpOnly cookies.
+  - Enforce CSRF on state-changing requests.
+  - Use secure, sameSite, and path-scoped cookies; avoid exposing secrets to the client.
+  - No new auth providers/libs without approval; integrate with existing DRF backend.
+  - Respect role-based UI hiding (EMPLOYEE/COORDINATOR/MANAGER/ADMIN) and server-side permission checks.
+guidelines:
+  coding:
+    - Prefer cookie-based session/JWT with httpOnly + SameSite=Lax/Strict.
+    - Add CSRF header on POST/PUT/PATCH/DELETE; read from cookie/meta.
+    - Implement route guards: redirect unauthenticated users to /login.
+    - Hydrate user + roles early (layout/server components) to drive nav visibility.
+    - Centralise auth fetch in an api client; handle 401/403 by redirect or toast.
+    - SSR/ISR-safe: avoid leaking tokens to the client; use server actions or Route Handlers.
+  testing:
+    - Integration tests for login/logout and protected routes.
+    - Verify 401/403 flows and CSRF failures produce UI toasts.
+    - Snapshot tests for nav items hidden per role.
+  communication:
+    - Document cookie names, expiry, and security flags (EN/ES).
+    - Note any assumptions about backend endpoints (/auth/login, /auth/me, /auth/logout).
+runbook:
+  steps:
+    - Review backend auth endpoints and CSRF expectations.
+    - Implement cookie storage and CSRF token retrieval.
+    - Create route guards and a user session hook/provider.
+    - Wire nav visibility to hydrated roles.
+    - Add tests for auth flows and protected pages.

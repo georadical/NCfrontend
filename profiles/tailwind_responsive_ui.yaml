@@ -1,0 +1,30 @@
+name: tailwind_responsive_ui
+summary: Build responsive, accessible UI using Tailwind (layouts, grids, dark mode, spacing/typography).
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Do not install new UI libraries without approval.
+  - Follow existing design tokens and class naming conventions.
+  - Prefer semantic HTML and ARIA attributes.
+guidelines:
+  coding:
+    - Use Tailwind utilities; avoid inline styles.
+    - Implement mobile-first breakpoints (sm, md, lg, xl, 2xl).
+    - Provide dark mode classes (dark:) where meaningful.
+    - Use consistent spacing scale and typography presets.
+    - Extract reusable components when duplication appears.
+  testing:
+    - Visual regression-ready: stable markup and class names.
+    - Add minimal RTL tests for critical responsive behaviours (collapsing nav, stacks → grids).
+  communication:
+    - Document decisions in component README comments (EN/ES brief).
+    - Include a short checklist of breakpoints verified.
+runbook:
+  steps:
+    - Audit target page/component: content blocks, priority on mobile.
+    - Draft mobile layout (stack), then expand to md/lg with grid/flex.
+    - Add dark mode variants and focus-visible styles.
+    - Validate with keyboard and screen-reader landmarks.
+    - Provide before/after notes and next steps.

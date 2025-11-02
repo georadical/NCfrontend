@@ -1,0 +1,31 @@
+name: api_contract_reader
+summary: Consume the backend OpenAPI specification and generate a stable JavaScript client; ensure UI–API synchronization.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Do not invent endpoints or payloads; the source of truth is /api/schema/ (OpenAPI).
+  - Regenerate the client only with confirmed backend changes.
+  - Do not introduce additional network libraries without approval (use fetch).
+  - Respect the backend error format: { detail, code }.
+guidelines:
+  coding:
+    - Use JS codegen (openapi-typescript-codegen with --useJs) targeting src/lib/api/.
+    - Centralize fetch and error handling in an api-client (optional retry).
+    - Keep base URL and headers configurable via environment (.env).
+    - Expose helpers per resource (e.g., TimesheetEntryService.*).
+    - Include minimal usage examples in comments (EN only).
+  testing:
+    - Test that the client builds and performs a basic GET to a public/authenticated endpoint.
+    - Add a "drift" check (schema version/date) and fail if desynchronized.
+  communication:
+    - Document the npm generation command and when to execute it.
+    - Note dependencies and version in README.
+runbook:
+  steps:
+    - Verify backend is running and /api/schema/ is accessible or use schema.json.
+    - Run codegen into src/lib/api/.
+    - Create a centralized api-client handling {detail, code}.
+    - Test a simple endpoint (list) and log usage example.
+    - Add a CI task to alert on schema drift.

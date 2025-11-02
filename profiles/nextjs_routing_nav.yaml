@@ -1,0 +1,31 @@
+name: nextjs_routing_nav
+summary: Manage Next.js routing, layouts, navigation menus, and enforce role-based access control (EMPLOYEE/COORDINATOR/MANAGER/ADMIN).
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Do not hardcode roles in components; centralize role-based access logic.
+  - Avoid creating duplicate layouts; reuse shared layouts where possible.
+  - No third-party routing libraries; rely on Next.js App Router.
+guidelines:
+  coding:
+    - Use Next.js App Router (app/ directory) with nested layouts.
+    - Create a centralized navigation config mapping roles to visible modules.
+    - Hide or disable UI items for restricted roles rather than removing logic server-side.
+    - Add protected route wrappers that redirect unauthorized users to /login or /403.
+    - Ensure breadcrumbs and navigation are consistent across pages.
+  testing:
+    - RTL tests verifying that roles see only the allowed nav items.
+    - Integration tests with Playwright for protected routes (redirects, access denied).
+  communication:
+    - Document role-to-module mapping in code comments.
+    - Provide examples of conditional nav rendering for each role.
+runbook:
+  steps:
+    - Define navigation config (items, routes, required roles).
+    - Implement shared layout with sidebar/topbar navigation.
+    - Add route guards that check user role before rendering pages.
+    - Write RTL tests for nav visibility by role.
+    - Validate Playwright tests for redirect flows.
+    - Update README with navigation and role rules.

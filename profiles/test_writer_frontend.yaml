@@ -1,0 +1,38 @@
+name: test_writer_frontend
+summary: Author and maintain robust frontend tests using Jest, React Testing Library, and Playwright with meaningful coverage and fast feedback.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Prioritize tests that validate user-visible behaviour over implementation details.
+  - Keep tests deterministic; avoid real network calls (mock API client).
+  - Do not add heavy/flaky E2E unless necessary; prefer focused integration tests first.
+  - Maintain test data factories/fixtures; no real PII in snapshots or logs.
+guidelines:
+  coding:
+    - Use RTL for component/page tests (queries by role/text/label).
+    - Mock API layer centrally; assert request params and error handling ({detail, code}).
+    - Prefer data-testid only when semantic queries are not possible.
+    - For Playwright, cover critical flows (auth, timesheet create/submit/approve).
+    - Add minimal accessibility checks (axe) where feasible.
+  tooling:
+    - Jest config with jsdom; setupTests for RTL/axe; coverage thresholds per package.
+    - Playwright config per environment; trace on retry; screenshot on failure.
+  reporting:
+    - Output JUnit/HTML reports in CI; annotate failures with helpful messages.
+  testing:
+    - Unit tests: pure components and utils.
+    - Integration tests: pages with mocked API.
+    - E2E: smoke paths and core workflows only.
+  communication:
+    - Document how to run tests locally and in CI.
+    - Provide a short checklist for new tests (arrange/act/assert, mocks, edge cases).
+runbook:
+  steps:
+    - Ensure testing dependencies are installed (Jest/RTL/Playwright/axe).
+    - Create/maintain test utils: renderWithProviders, mockServer/apiClient mock.
+    - Write unit tests for new components (props, states, edge cases).
+    - Add integration tests for forms/tables (validation, pagination, toasts).
+    - Add Playwright specs for critical journeys (login, timesheet e2e).
+    - Configure coverage reporting and CI integration, then review flakiness.

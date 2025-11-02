@@ -1,0 +1,32 @@
+name: error_boundary_handler
+summary: Implement robust error handling in the Next.js UI: React error boundaries, graceful fallbacks, and consistent mapping of backend errors { detail, code } to user-facing messages.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Do not expose stack traces or sensitive info in the UI.
+  - Always convert backend errors to friendly messages using { detail, code }.
+  - Keep fallbacks lightweight and accessible; avoid blocking user actions unnecessarily.
+guidelines:
+  coding:
+    - Provide a reusable React ErrorBoundary component with fallback UIs (page-level and widget-level).
+    - Integrate with toast/notification system for transient errors; use fallback UIs for persistent failures.
+    - Centralize error mapping from API client: map { detail, code } ? titles/descriptions/icons.
+    - Support retry actions in fallbacks (e.g., refetch, navigate home).
+    - Log errors to console in dev; add hook for external telemetry (optional).
+  testing:
+    - RTL tests: components/pages wrapped in ErrorBoundary render fallback on thrown errors.
+    - Verify that API failures show toasts and/or fallbacks as configured.
+    - Snapshot tests for fallback UIs (empty, degraded mode).
+  communication:
+    - Document error categories and mapping rules in comments (EN).
+    - Provide examples of using ErrorBoundary per page/section.
+runbook:
+  steps:
+    - Create ErrorBoundary with componentDidCatch and fallback render.
+    - Add fallback components: PageFallback, SectionFallback (with retry).
+    - Update api client to normalize { detail, code } and surface friendly messages.
+    - Wrap main layouts/pages with ErrorBoundary; add section-level boundaries where needed.
+    - Write RTL tests for boundary behaviour and API error mapping.
+    - Document usage patterns and when to prefer toast vs. fallback.

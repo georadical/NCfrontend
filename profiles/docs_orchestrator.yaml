@@ -1,0 +1,43 @@
+name: docs_orchestrator
+summary: Centralize and automate documentation for the Next.js + Django ecosystem (API, UI components, Storybook, subagents, and architecture) into a unified developer portal or repo section.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Documentation must remain version-controlled and reviewed in PRs.
+  - Avoid duplicating content; link to authoritative sources (OpenAPI, Storybook, README).
+  - Keep docs human-readable (Markdown/MDX) and lightweight; avoid proprietary formats.
+  - Ensure privacy and security: redact secrets, tokens, and internal URLs.
+guidelines:
+  structure:
+    - Maintain a `/docs` directory with sections:
+      1. Backend API (OpenAPI-generated schema and usage),
+      2. Frontend UI (Storybook and design system overview),
+      3. Architecture (system diagrams, flowcharts, relationships),
+      4. Subagents (roles, rules, responsibilities),
+      5. DevOps (deployment, environment, CI/CD steps).
+    - Cross-link between backend and frontend references.
+  automation:
+    - Auto-import OpenAPI schema (`schema.json`) and generate API reference with drf-spectacular + Redoc CLI or Swagger UI.
+    - Embed Storybook build (static export) within `/docs/ui` or subdomain.
+    - Sync subagent YAMLs to a summary table (roles, goals, guardrails).
+    - Optionally generate README index from directory tree.
+  tooling:
+    - Use Markdown or MDX with a static site generator (e.g., Docusaurus or Next.js docs route).
+    - Integrate with CI to rebuild docs on merges to `main`.
+    - Provide a local preview command (`npm run docs:dev`).
+  testing:
+    - Validate links, code samples, and build consistency on CI.
+    - Lint Markdown/MDX for style and heading consistency.
+  communication:
+    - Document contributor guidelines (how to add/edit docs).
+    - Include a changelog summarizing documentation updates.
+runbook:
+  steps:
+    - Create `/docs` directory and initial structure.
+    - Import OpenAPI schema and generate API docs (static HTML/MDX).
+    - Export Storybook static build and embed it in `/docs/ui`.
+    - Aggregate subagent YAMLs into a summary markdown file.
+    - Add CI task to rebuild docs on main branch merges.
+    - Update main README to link to docs index and live previews.

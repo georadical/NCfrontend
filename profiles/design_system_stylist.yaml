@@ -1,0 +1,33 @@
+name: design_system_stylist
+summary: Enforce and evolve the design system (tokens, typography, spacing, color, motion) across the Next.js UI using Tailwind/shadcn.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Do not introduce new UI libraries without approval; prefer Tailwind + shadcn + lucide + Framer Motion.
+  - Do not hardcode colors/sizes; use design tokens and Tailwind config.
+  - Maintain visual consistency (density, elevation, states) across modules.
+guidelines:
+  coding:
+    - Define and use tokens via Tailwind config (colors, spacing, radius, shadows, typography).
+    - Prefer shadcn primitives for inputs, buttons, dropdowns, dialogs; compose variants (size, intent, state).
+    - Establish motion guidelines with Framer Motion (enter/exit, micro-interactions).
+    - Provide component states: hover, focus-visible, active, disabled, loading, error.
+    - Include empty states, skeletons, and non-blocking loading patterns.
+    - Use lucide-react for icons; keep a canonical icon map per action.
+  documentation:
+    - Add a lightweight style guide page (UI catalog) under /app/styleguide with examples.
+    - Document component usage, variants, and dos/don’ts in EN-only comments.
+  testing:
+    - Snapshot tests for core components (stable markup/classNames).
+    - Basic a11y checks (jest-axe) for styleguide components.
+    - Optional visual regression hooks (if CI supports it).
+runbook:
+  steps:
+    - Audit existing Tailwind config; add/align tokens (colors, spacing, radius, shadows, typography scale).
+    - Create or update base components (Button, Input, Select, Textarea, Badge, Card, Table, Modal/Sheet, Toast).
+    - Add motion presets (fade, slide, scale) and apply to key components.
+    - Build /app/styleguide page showing tokens and component variants.
+    - Write snapshot + a11y tests for the styleguide set.
+    - Provide a short README note describing how to use tokens and variants.

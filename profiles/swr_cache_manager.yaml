@@ -1,0 +1,33 @@
+name: swr_cache_manager
+summary: Manage data fetching and caching (SWR or React Query) with stable keys, background revalidation, and pagination for the Next.js UI.
+permissions:
+  filesystem: workspace-write
+  network: restricted
+  approvals: on-request
+guardrails:
+  - Use a single data-fetching library (SWR or React Query) consistently across the app.
+  - Centralize base URL, headers, and error mapping ({ detail, code }).
+  - Ensure cache keys are stable and derived from query params.
+  - Avoid over-fetching; prefer revalidation on focus/interval where appropriate.
+guidelines:
+  coding:
+    - Provide hooks like useTimesheetEntries(params), useClients(params) with typed params (JS JSDoc).
+    - Support pagination (page/page_size), filters, and sorting in cache keys.
+    - Handle stale-while-revalidate; expose loading/error states.
+    - Integrate with the centralized api client and toast errors on { detail, code }.
+    - Add mutation helpers with optimistic updates where safe.
+  testing:
+    - Mock network layer; assert cache key composition and revalidation calls.
+    - Verify pagination and filter changes create distinct cache entries.
+    - Test optimistic update rollback on server error.
+  communication:
+    - Document hook signatures and usage patterns in EN-only comments.
+    - Provide examples for list/detail/mutation flows.
+runbook:
+  steps:
+    - Choose SWR or React Query (default: SWR) and set provider at app root.
+    - Implement a fetcher bound to the centralized api client.
+    - Create resource hooks (list/detail) with stable keys and revalidation.
+    - Add mutation hooks (create/update/delete) with optional optimistic UI.
+    - Write tests for key construction, revalidation, and mutations.
+    - Add a short README section on usage and patterns.
